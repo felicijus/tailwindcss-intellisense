@@ -8,9 +8,7 @@ import { getInvalidVariantDiagnostics } from './getInvalidVariantDiagnostics'
 import { getInvalidConfigPathDiagnostics } from './getInvalidConfigPathDiagnostics'
 import { getInvalidTailwindDirectiveDiagnostics } from './getInvalidTailwindDirectiveDiagnostics'
 import { getRecommendedVariantOrderDiagnostics } from './getRecommendedVariantOrderDiagnostics'
-import { getInvalidSourceDiagnostics } from './getInvalidSourceDiagnostics'
-import { getUsedBlocklistedClassDiagnostics } from './getUsedBlocklistedClassDiagnostics'
-import { getSuggestCanonicalClassesDiagnostics } from './canonical-classes'
+import { getUnknownClassesDiagnostics } from './getUnknownClassesDiagnostics'
 
 export async function doValidate(
   state: State,
@@ -21,6 +19,7 @@ export async function doValidate(
     DiagnosticKind.InvalidScreen,
     DiagnosticKind.InvalidVariant,
     DiagnosticKind.InvalidConfigPath,
+	DiagnosticKind.InvalidIdentifier,
     DiagnosticKind.InvalidTailwindDirective,
     DiagnosticKind.InvalidSourceDirective,
     DiagnosticKind.RecommendedVariantOrder,
@@ -32,7 +31,10 @@ export async function doValidate(
 
   return settings.tailwindCSS.validate
     ? [
-        ...(only.includes(DiagnosticKind.CssConflict)
+        ...(only.includes(DiagnosticKind.InvalidIdentifier)
+          ? await getUnknownClassesDiagnostics(state, document, settings)
+          : []),
+		...(only.includes(DiagnosticKind.CssConflict)
           ? await getCssConflictDiagnostics(state, document, settings)
           : []),
         ...(only.includes(DiagnosticKind.InvalidApply)
