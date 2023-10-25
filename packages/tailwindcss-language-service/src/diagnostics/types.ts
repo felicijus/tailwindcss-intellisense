@@ -15,6 +15,19 @@ export enum DiagnosticKind {
   SuggestCanonicalClasses = 'suggestCanonicalClasses',
 }
 
+export type InvalidIdentifierDiagnostic = Diagnostic & {
+	code: DiagnosticKind.InvalidIdentifier
+	className: DocumentClassName,
+	suggestion?: string,
+	otherClassNames: DocumentClassName[]
+}
+
+export function isInvalidIdentifierDiagnostic(
+	diagnostic: AugmentedDiagnostic
+  ): diagnostic is InvalidIdentifierDiagnostic {
+	return diagnostic.code === DiagnosticKind.InvalidIdentifier
+  }
+
 export type CssConflictDiagnostic = Diagnostic & {
   code: DiagnosticKind.CssConflict
   className: DocumentClassName
@@ -129,6 +142,7 @@ export type AugmentedDiagnostic =
   | InvalidApplyDiagnostic
   | InvalidScreenDiagnostic
   | InvalidVariantDiagnostic
+  | InvalidIdentifierDiagnostic
   | InvalidConfigPathDiagnostic
   | InvalidTailwindDirectiveDiagnostic
   | InvalidSourceDirectiveDiagnostic
