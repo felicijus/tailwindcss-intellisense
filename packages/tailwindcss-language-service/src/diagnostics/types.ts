@@ -19,6 +19,7 @@ export type InvalidIdentifierDiagnostic = Diagnostic & {
 	code: DiagnosticKind.InvalidIdentifier
 	className: DocumentClassName,
 	suggestion?: string,
+	chunk: string,
 	otherClassNames: DocumentClassName[]
 }
 
